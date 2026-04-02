@@ -1,126 +1,113 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const DATA_DIR = path.join(__dirname, '../public/data');
+
+// Base URL for Sefaria API
+const SEFARIA_BASE = 'https://www.sefaria.org/api/v3/texts';
+
 /**
- * Sefaria Content Ingestion Script
- * Fetches Tehillim (all 150 chapters) from Sefaria API and formats
- * into the app's JSON data structure.
- *
- * Run: npx tsx scripts/build-content.ts
+ * Clean text from nikud (Hebrew vowels/cantillation)
  */
-
-import { writeFileSync, mkdirSync } from 'fs';
-import { join } from 'path';
-
-const API_BASE = 'https://www.sefaria.org/api/v3/texts';
-const OUT_DIR = join(import.meta.dirname ?? __dirname, '..', 'public', 'data');
-
-// Unicode ranges for stripping
-const CANTILLATION_RE = /[\u0591-\u05AF]/g;   // te'amim (cantillation marks)
-const NIKUD_RE = /[\u05B0-\u05BD\u05BF\u05C1\u05C2\u05C4\u05C5\u05C7]/g; // vowel points
-const HTML_RE = /<[^>]+>/g;                    // HTML tags
-const SPECIAL_CHARS_RE = /&[a-z]+;/g;          // HTML entities like &thinsp;
-
-interface TehillimChapter {
-  number: number;
-  book: number;
-  verseCount: number;
-  contentHe: string;
-  contentHeClean: string;
+function cleanNikud(text: string): string {
+  // Removes unicode range for Hebrew vowels & cantillation marks
+  return text.replace(/[\u0591-\u05C7]/g, '');
 }
 
-function getBook(chapter: number): number {
-  if (chapter <= 41) return 1;
-  if (chapter <= 72) return 2;
-  if (chapter <= 89) return 3;
-  if (chapter <= 106) return 4;
-  return 5;
+/**
+ * Remove HTML tags from Sefaria text (e.g. <b>, <i>, <small>)
+ */
+function stripHtml(text: string): string {
+  return text.replace(/<\/?[^>]+(>|$)/g, '');
 }
 
-/** Strip HTML tags and entities */
-function stripHtml(s: string): string {
-  return s
-    .replace(HTML_RE, '')
-    .replace(SPECIAL_CHARS_RE, '')
-    .replace(/\u00A0/g, ' ')
-    .trim();
-}
-
-/** Strip cantillation marks but keep nikud */
-function withNikud(s: string): string {
-  return stripHtml(s).replace(CANTILLATION_RE, '');
-}
-
-/** Strip both cantillation and nikud */
-function withoutNikud(s: string): string {
-  return withNikud(s).replace(NIKUD_RE, '');
-}
-
-async function fetchChapter(num: number): Promise<TehillimChapter | null> {
-  const url = `${API_BASE}/Psalms.${num}`;
-  try {
-    const res = await fetch(url);
-    if (!res.ok) {
-      console.error(`  ❌ HTTP ${res.status} for chapter ${num}`);
-      return null;
-    }
-    const data = await res.json();
-    const versions = data.versions ?? [];
-    const heVersion = versions.find((v: { language: string }) => v.language === 'he');
-    if (!heVersion?.text) {
-      console.error(`  ❌ No Hebrew text for chapter ${num}`);
-      return null;
-    }
-
-    const verses: string[] = Array.isArray(heVersion.text) ? heVersion.text : [heVersion.text];
-
+/**
+ * Process raw text array from Sefaria into standard ContentNode objects
+ */
+function processTextNodes(
+  rawTexts: string[],
+  prefixId: string,
+  condition?: string
+): any[] {
+  return rawTexts.map((text, index) => {
+    const cleanedHtml = stripHtml(text);
     return {
-      number: num,
-      book: getBook(num),
-      verseCount: verses.length,
-      contentHe: verses.map(withNikud).join('\n'),
-      contentHeClean: verses.map(withoutNikud).join('\n'),
+      id: `${prefixId}-${index + 1}`,
+      type: 'text',
+      contentHe: cleanedHtml,
+      contentHeClean: cleanNikud(cleanedHtml),
+      ...(condition ? { renderCondition: condition } : {}),
     };
-  } catch (err) {
-    console.error(`  ❌ Fetch error for chapter ${num}:`, err);
-    return null;
-  }
+  });
 }
 
-async function buildTehillim() {
-  console.log('📖 Fetching Tehillim from Sefaria API...');
-  mkdirSync(OUT_DIR, { recursive: true });
-
-  const chapters: TehillimChapter[] = [];
-  const BATCH_SIZE = 5; // Rate limit friendly
-
-  for (let start = 1; start <= 150; start += BATCH_SIZE) {
-    const end = Math.min(start + BATCH_SIZE - 1, 150);
-    const batch: Promise<TehillimChapter | null>[] = [];
-
-    for (let i = start; i <= end; i++) {
-      batch.push(fetchChapter(i));
-    }
-
-    const results = await Promise.all(batch);
-    for (const ch of results) {
-      if (ch) {
-        chapters.push(ch);
-        process.stdout.write(`  ✅ ${ch.number} `);
-      }
-    }
-    // Rate limit pause between batches
-    if (end < 150) {
-      await new Promise((r) => setTimeout(r, 500));
-    }
+/**
+ * Fetch a text ref from Sefaria
+ */
+async function fetchSefariaText(ref: string): Promise<string[]> {
+  console.log(`Fetching ${ref}...`);
+  const res = await fetch(`${SEFARIA_BASE}/${encodeURIComponent(ref)}`);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch ${ref}: ${res.statusText}`);
   }
+  const data = await res.json();
+  
+  // v3 API structure: return versions[0].text which is array of strings (or nested arrays)
+  const textPayload = data.versions?.[0]?.text;
+  if (!textPayload) return [];
 
-  console.log(`\n\n📝 Writing ${chapters.length} chapters to tehillim.json`);
+  // Flatten if it's nested arrays
+  return Array.isArray(textPayload) ? textPayload.flat(Infinity) : [textPayload];
+}
 
-  writeFileSync(
-    join(OUT_DIR, 'tehillim.json'),
+/**
+ * Command: Build Tehillim Sample
+ */
+async function buildTehillim() {
+  console.log('Building Tehillim (Chapters 20, 23)...');
+  
+  const ch20Raw = await fetchSefariaText('Psalms.20');
+  const ch23Raw = await fetchSefariaText('Psalms.23');
+
+  const chapters = [
+    {
+      number: 20,
+      contentHe: ch20Raw.join('\n'),
+      contentHeClean: cleanNikud(ch20Raw.join('\n')),
+      verseCount: ch20Raw.length,
+    },
+    {
+      number: 23,
+      contentHe: ch23Raw.join('\n'),
+      contentHeClean: cleanNikud(ch23Raw.join('\n')),
+      verseCount: ch23Raw.length,
+    }
+  ];
+
+  await fs.writeFile(
+    path.join(DATA_DIR, 'tehillim-sample.json'),
     JSON.stringify(chapters, null, 2),
     'utf-8'
   );
-
-  console.log('✅ Done!');
+  console.log('Tehillim written to public/data/tehillim-sample.json');
 }
 
-buildTehillim().catch(console.error);
+/**
+ * Main execution
+ */
+async function main() {
+  await fs.mkdir(DATA_DIR, { recursive: true });
+
+  try {
+    await buildTehillim();
+    console.log('✅ Content Build Complete!');
+  } catch (err) {
+    console.error('❌ Build failed:', err);
+    process.exit(1);
+  }
+}
+
+main();
