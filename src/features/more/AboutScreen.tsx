@@ -10,8 +10,8 @@ export function AboutScreen() {
           <h2 style={{ fontFamily: 'var(--font-prayer)', fontSize: 'var(--text-3xl)', color: 'var(--color-primary)', marginBottom: 'var(--space-2)' }}>
             סידור+
           </h2>
-          <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-sm)' }}>
-            גרסה 0.1.0
+          <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-sm)', direction: 'ltr', display: 'inline-block' }}>
+            גרסה {__APP_VERSION__} ({__COMMIT_HASH__})
           </p>
           <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-sm)', marginTop: 'var(--space-2)' }}>
             אפליקציית סידור תפילה חכמה ומקיפה
