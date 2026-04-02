@@ -1,0 +1,56 @@
+import { useEffect } from 'react';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useContextStore } from './core/stores';
+import { BottomNav } from './shared/BottomNav';
+import { TodayScreen } from './features/home/TodayScreen';
+import { SiddurScreen } from './features/siddur/SiddurScreen';
+import { PrayerReader } from './features/siddur/PrayerReader';
+import { TehillimScreen } from './features/tehillim/TehillimScreen';
+import { TehillimReader } from './features/tehillim/TehillimReader';
+import { HalachaScreen } from './features/halacha/HalachaScreen';
+import { MoreScreen } from './features/more/MoreScreen';
+import { AboutScreen } from './features/more/AboutScreen';
+import { SettingsScreen } from './features/more/SettingsScreen';
+import { ZmanimScreen } from './features/zmanim/ZmanimScreen';
+import { TefilatHaDerech } from './features/prayer/TefilatHaDerech';
+import { DateConverter } from './features/tools/DateConverter';
+
+export default function App() {
+  const refreshContext = useContextStore((s) => s.refreshContext);
+
+  useEffect(() => {
+    refreshContext();
+    const interval = setInterval(refreshContext, 5 * 60 * 1000);
+
+    const splash = document.getElementById('splash');
+    if (splash) {
+      splash.classList.add('hide');
+      setTimeout(() => splash.remove(), 500);
+    }
+
+    return () => clearInterval(interval);
+  }, [refreshContext]);
+
+  return (
+    <HashRouter>
+      <div className="app-root">
+        <Routes>
+          <Route path="/" element={<TodayScreen />} />
+          <Route path="/siddur" element={<SiddurScreen />} />
+          <Route path="/siddur/:prayerId" element={<PrayerReader />} />
+          <Route path="/tehillim" element={<TehillimScreen />} />
+          <Route path="/tehillim/:chapterId" element={<TehillimReader />} />
+          <Route path="/halacha" element={<HalachaScreen />} />
+          <Route path="/zmanim" element={<ZmanimScreen />} />
+          <Route path="/tefilat-haderech" element={<TefilatHaDerech />} />
+          <Route path="/date-converter" element={<DateConverter />} />
+          <Route path="/more" element={<MoreScreen />} />
+          <Route path="/about" element={<AboutScreen />} />
+          <Route path="/settings" element={<SettingsScreen />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+        <BottomNav />
+      </div>
+    </HashRouter>
+  );
+}

@@ -1,0 +1,14 @@
+.content-renderer {
+  padding-block: var(--space-2);
+}
+.prayer-text-block {
+  margin-bottom: var(--space-4);
+}
+.prayer-text-block .prayer-text {
+  text-indent: 0;
+}
+.content-group {
+  margin-block: var(--space-3);
+  padding-right: var(--space-2);
+  border-right: 3px solid var(--color-primary);
+}

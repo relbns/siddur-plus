@@ -1,0 +1,43 @@
+.siddur-section {
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-4);
+}
+.prayer-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.prayer-list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  text-align: right;
+  cursor: pointer;
+  border: none;
+  transition: transform var(--transition-fast);
+}
+.prayer-list-item:active {
+  transform: scale(0.98);
+}
+.prayer-item-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+.prayer-item-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.prayer-item-title {
+  font-size: var(--text-base);
+  font-weight: 600;
+}
+.prayer-item-desc {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+.prayer-item-arrow {
+  font-size: var(--text-xl);
+  color: var(--color-text-muted);
+}

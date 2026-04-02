@@ -1,0 +1,60 @@
+.tefilat-haderech-screen {
+  background: var(--color-bg);
+}
+
+.tefilat-content {
+  padding-top: var(--space-6);
+  max-width: 600px;
+}
+.tefilat-content .prayer-text-block {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-6);
+}
+
+/* TTS Button */
+.tts-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-4);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  background: transparent;
+  color: var(--color-primary);
+  font-family: var(--font-ui);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-bottom: var(--space-4);
+}
+.tts-btn:active {
+  transform: scale(0.98);
+}
+.tts-btn--active {
+  background: var(--color-primary);
+  color: white;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+.tts-icon {
+  font-size: 1.5rem;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.tefilat-note {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  background: var(--color-surface-alt);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  line-height: 1.7;
+}
