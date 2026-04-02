@@ -8,13 +8,13 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'prompt',
-      includeAssets: ['favicon.svg', 'data/**/*.json'],
+      includeAssets: ['favicon.svg', 'favicon.ico', 'apple-touch-icon.png', 'favicon-96x96.png', 'data/**/*.json'],
       manifest: {
         name: 'סידור+',
         short_name: 'סידור+',
         description: 'אפליקציית סידור תפילה מלאה - תפילות, תהילים, הלכה ומצפן',
-        theme_color: '#0d9488',
-        background_color: '#0f172a',
+        theme_color: '#accce9',
+        background_color: '#accce9',
         display: 'standalone',
         dir: 'rtl',
         lang: 'he',
@@ -23,12 +23,12 @@ export default defineConfig({
         scope: './',
         icons: [
           {
-            src: 'pwa-192x192.png',
+            src: 'web-app-manifest-192x192.png',
             sizes: '192x192',
             type: 'image/png',
           },
           {
-            src: 'pwa-512x512.png',
+            src: 'web-app-manifest-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable',

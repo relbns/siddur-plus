@@ -8,6 +8,8 @@ import { PrayerReader } from './features/siddur/PrayerReader';
 import { TehillimScreen } from './features/tehillim/TehillimScreen';
 import { TehillimReader } from './features/tehillim/TehillimReader';
 import { HalachaScreen } from './features/halacha/HalachaScreen';
+import { HalachaDetailScreen } from './features/halacha/HalachaDetailScreen';
+import { SearchScreen } from './features/search/SearchScreen';
 import { MoreScreen } from './features/more/MoreScreen';
 import { AboutScreen } from './features/more/AboutScreen';
 import { SettingsScreen } from './features/more/SettingsScreen';
@@ -40,7 +42,9 @@ export default function App() {
           <Route path="/siddur/:prayerId" element={<PrayerReader />} />
           <Route path="/tehillim" element={<TehillimScreen />} />
           <Route path="/tehillim/:chapterId" element={<TehillimReader />} />
+          <Route path="/search" element={<SearchScreen />} />
           <Route path="/halacha" element={<HalachaScreen />} />
+          <Route path="/halacha/:id" element={<HalachaDetailScreen />} />
           <Route path="/zmanim" element={<ZmanimScreen />} />
           <Route path="/tefilat-haderech" element={<TefilatHaDerech />} />
           <Route path="/date-converter" element={<DateConverter />} />

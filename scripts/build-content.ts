@@ -64,35 +64,41 @@ async function fetchSefariaText(ref: string): Promise<string[]> {
 }
 
 /**
- * Command: Build Tehillim Sample
+ * Command: Build Tehillim Full (1-150)
  */
 async function buildTehillim() {
-  console.log('Building Tehillim (Chapters 20, 23)...');
+  console.log('Building Tehillim (Chapters 1-150)...');
   
-  const ch20Raw = await fetchSefariaText('Psalms.20');
-  const ch23Raw = await fetchSefariaText('Psalms.23');
-
-  const chapters = [
-    {
-      number: 20,
-      contentHe: ch20Raw.join('\n'),
-      contentHeClean: cleanNikud(ch20Raw.join('\n')),
-      verseCount: ch20Raw.length,
-    },
-    {
-      number: 23,
-      contentHe: ch23Raw.join('\n'),
-      contentHeClean: cleanNikud(ch23Raw.join('\n')),
-      verseCount: ch23Raw.length,
+  const chapters = [];
+  
+  // Fetch sequentially to respect rate limits
+  for (let i = 1; i <= 150; i++) {
+    process.stdout.write(`Fetching Psalms.${i}... `);
+    try {
+      const raw = await fetchSefariaText(`Psalms.${i}`);
+      chapters.push({
+        number: i,
+        contentHe: raw.join('\\n'),
+        contentHeClean: cleanNikud(raw.join('\\n')),
+        verseCount: raw.length,
+      });
+      console.log('OK');
+      
+      // Delay 100ms between requests
+      await new Promise(resolve => setTimeout(resolve, 100));
+    } catch (err) {
+      console.log('ERROR');
+      console.error(`Failed on chapter ${i}:`, err);
+      // We shouldn't fail the whole build if one fails, but standard is they all exist.
     }
-  ];
+  }
 
   await fs.writeFile(
-    path.join(DATA_DIR, 'tehillim-sample.json'),
+    path.join(DATA_DIR, 'tehillim.json'),
     JSON.stringify(chapters, null, 2),
     'utf-8'
   );
-  console.log('Tehillim written to public/data/tehillim-sample.json');
+  console.log(`Tehillim written to public/data/tehillim.json (${chapters.length} chapters)`);
 }
 
 /**
