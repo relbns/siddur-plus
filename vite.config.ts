@@ -16,7 +16,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'favicon.ico', 'apple-touch-icon.png', 'favicon-96x96.png', 'data/**/*.json'],
       manifest: {
         name: 'סידור+',
@@ -45,6 +45,8 @@ export default defineConfig({
         ],
       },
       workbox: {
+        skipWaiting: true,
+        clientsClaim: true,
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}', 'data/**/*.json'],
         runtimeCaching: [
           {
