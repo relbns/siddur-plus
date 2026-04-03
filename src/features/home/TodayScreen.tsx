@@ -1,120 +1,222 @@
+import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useContextStore } from '../../core/stores';
+import { StandardHeader } from '../../shared/Header';
+import { Sun, Moon, Clock, ChevronLeft, Heart, Sparkles } from 'lucide-react';
+import { ShabbatChecklist } from './ShabbatChecklist';
 import './TodayScreen.css';
 
-const DAYS_HE = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
-
-const PRAYER_SUGGESTIONS: Record<string, { label: string; icon: string }> = {
-  morning: { label: 'שחרית', icon: '🌅' },
-  afternoon: { label: 'מנחה', icon: '☀️' },
-  evening: { label: 'ערבית', icon: '🌙' },
-  night: { label: 'קריאת שמע על המיטה', icon: '🌌' },
-};
-
 export function TodayScreen() {
+  const navigate = useNavigate();
   const context = useContextStore((s) => s.context);
+
+  const dayName = useMemo(() => {
+    if (!context) return '';
+    const days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+    return days[context.dayOfWeek];
+  }, [context]);
 
   if (!context) {
     return (
-      <div className="screen container" style={{ paddingTop: 'var(--space-8)' }}>
-        <p>טוען...</p>
+      <div className="screen loading-screen">
+        <div className="loader"></div>
+        <p>טוען נתונים...</p>
       </div>
     );
   }
 
-  const dayName = DAYS_HE[context.dayOfWeek] ?? '';
-  const suggestion = PRAYER_SUGGESTIONS[context.currentTimeSlot];
-
-  // Build contextual badges
-  const badges: string[] = [];
-  if (context.isShabbat) badges.push('שבת קודש');
-  if (context.isYomTov) badges.push('יום טוב');
-  if (context.isCholHamoed) badges.push('חול המועד');
-  if (context.isRoshChodesh) badges.push('ראש חודש');
-  if (context.isChanukah) badges.push('חנוכה');
-  if (context.isPurim) badges.push('פורים');
-  if (context.isFastDay) badges.push('יום צום');
-  if (context.isErevShabbat) badges.push('ערב שבת');
-
-  // Build daily info items
-  const infoItems: { icon: string; label: string }[] = [];
-  if (!context.tachanunAllowed) infoItems.push({ icon: 'ℹ️', label: 'לא אומרים תחנון' });
-  if (!context.tefillinAllowed) infoItems.push({ icon: '🚫', label: 'לא מניחים תפילין' });
-  if (context.hallelType === 'full') infoItems.push({ icon: '🎶', label: 'הלל שלם' });
-  if (context.hallelType === 'half') infoItems.push({ icon: '🎵', label: 'חצי הלל' });
-  if (context.yaalehVeyavo) infoItems.push({ icon: '📜', label: 'יעלה ויבוא' });
-  if (context.sefiraDayHe) infoItems.push({ icon: '🔢', label: `ספירת העומר: ${context.sefiraDayHe}` });
-
   return (
     <div className="screen">
-      {/* Header */}
-      <header className="today-header">
-        <div className="today-date-block">
-          <h1 className="today-hebrew-date">{context.hebrewDate}</h1>
-          <p className="today-day-name">יום {dayName}</p>
-          {context.holidayName && <p className="today-holiday">{context.holidayName}</p>}
-          {context.parasha && !context.isYomTov && (
-            <p className="today-parasha">
-              {context.parasha.startsWith('פרשת') ? context.parasha : `פרשת ${context.parasha}`}
-            </p>
+      <StandardHeader title="סידור+" />
+      
+      <div className="container fade-in">
+
+        <header className="today-page-header">
+          <div className="today-date-block">
+            <h1 className="today-hebrew-date">{context.hebrewDate}</h1>
+            <p className="today-day-name">יום {dayName}</p>
+            {context.holidayName && <h2 className="today-holiday">{context.holidayName}</h2>}
+            {context.parasha && !context.isYomTov && (
+              <div className="parasha-badge fade-in">
+                <span className="parasha-label">פרשת השבוע:</span>
+                <span className="parasha-value">
+                  {context.isErevShabbat
+                    ? `ערב שבת קודש ״${context.parasha.replace('פרשת ', '')}״`
+                    : context.parasha.startsWith('פרשת') ? context.parasha : `פרשת ${context.parasha}`}
+                </span>
+              </div>
+            )}
+          </div>
+        </header>
+
+        {/* Badges */}
+        <div className="today-badges">
+          {context.isRoshChodesh && <span className="badge badge-primary">ראש חודש</span>}
+          {context.sefiraDay !== null && (
+            <span className="badge badge-accent">ספירת העומר: {context.sefiraDay}</span>
           )}
         </div>
-      </header>
 
-      <div className="container fade-in">
-        {/* Badges */}
-        {badges.length > 0 && (
-          <div className="today-badges">
-            {badges.map((b) => (
-              <span key={b} className="badge">{b}</span>
-            ))}
+        {/* Prayers Selection */}
+        <section className="prayers-section">
+          <h2 className="section-title">תפילות היום</h2>
+          <div className="prayer-grid">
+            <PrayerCard 
+              title="שחרית" 
+              icon={<Sun size={24} />} 
+              time={context.zmanim?.sunrise ? `מ- ${context.zmanim.sunrise.toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'})}` : undefined}
+              onClick={() => navigate('/siddur/shacharit')}
+              active={context.currentTimeSlot === 'morning'}
+            />
+            <PrayerCard 
+              title="מנחה" 
+              icon={<Clock size={24} />} 
+              onClick={() => navigate('/siddur/mincha')}
+              active={context.currentTimeSlot === 'afternoon'}
+            />
+            <PrayerCard 
+              title="ערבית" 
+              icon={<Moon size={24} />} 
+              onClick={() => navigate('/siddur/maariv')}
+              active={context.currentTimeSlot === 'evening' || context.currentTimeSlot === 'night'}
+            />
           </div>
-        )}
+        </section>
 
-        {/* Next Prayer Suggestion */}
-        {suggestion && (
-          <div className="card today-prayer-card">
-            <span className="prayer-card-icon">{suggestion.icon}</span>
-            <div>
-              <p className="prayer-card-label">התפילה הבאה</p>
-              <p className="prayer-card-name">{suggestion.label}</p>
+        {/* Shabbat Card */}
+        {(context.isShabbat || context.isErevShabbat) && (
+          <section className="shabbat-section">
+            <div className="shabbat-card">
+              <div className="shabbat-card-header">
+                <h3>{context.isShabbat ? 'שבת קודש' : 'שבת מתקרבת'}</h3>
+                <span className="parasha-name">{context.parasha}</span>
+              </div>
+              <div className="shabbat-times">
+                {context.candleLighting && (
+                  <div className="time-row">
+                    <span>הדלקת נרות:</span>
+                    <strong>{new Date(context.candleLighting).toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'})}</strong>
+                  </div>
+                )}
+                {context.havdalah && (
+                  <div className="time-row">
+                    <span>צאת השבת:</span>
+                    <strong>{new Date(context.havdalah).toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'})}</strong>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+            
+            {context.isErevShabbat && (
+              <div style={{ marginTop: 'var(--space-4)' }}>
+                <ShabbatChecklist />
+              </div>
+            )}
+          </section>
         )}
 
-        {/* Daily Info */}
-        {infoItems.length > 0 && (
-          <section className="today-info-section">
-            <h2 className="section-title">מידע יומי</h2>
-            <div className="today-info-grid">
-              {infoItems.map((item) => (
-                <div key={item.label} className="info-chip">
-                  <span>{item.icon}</span>
-                  <span>{item.label}</span>
-                </div>
-              ))}
+        {/* Zmanim Section */}
+        {context.zmanim && (
+          <section className="zmanim-section">
+            <h2 className="section-title">זמני היום</h2>
+            {!useContextStore.getState().context?.zmanim && (
+              <p className="zmanim-hint">מציג זמנים לפי ירושלים (מיקום לא זוהה)</p>
+            )}
+            <div className="zmanim-grid card">
+              <ZmanRow label="עלות השחר" time={context.zmanim.alotHashachar} />
+              <ZmanRow label="הנץ החמה" time={context.zmanim.sunrise} />
+              <ZmanRow label="סוף זמן קריאת שמע" time={context.zmanim.sofZmanShma} sub="אג״א" />
+              <ZmanRow label="סוף זמן תפילה" time={context.zmanim.sofZmanTfilla} />
+              <ZmanRow label="חצות היום" time={context.zmanim.chatzot} />
+              <ZmanRow label="מנחה גדולה" time={context.zmanim.minchaGedola} />
+              <ZmanRow label="שקיעה" time={context.zmanim.sunset} />
+              <ZmanRow label="צאת הכוכבים" time={context.zmanim.tzeitHakochavim} />
             </div>
           </section>
         )}
 
-        {/* Quick Actions */}
-        <section className="today-actions">
-          <h2 className="section-title">גישה מהירה</h2>
-          <div className="action-grid">
-            <a href="#/tehillim" className="action-card">
-              <span className="action-icon">🎵</span>
-              <span>תהילים יומי</span>
-            </a>
-            <a href="#/siddur" className="action-card">
-              <span className="action-icon">📖</span>
-              <span>סידור</span>
-            </a>
-            <a href="#/halacha" className="action-card">
-              <span className="action-icon">⚖️</span>
-              <span>הלכה יומית</span>
-            </a>
+        {/* Quick Links */}
+        <section className="quick-links">
+          <h2 className="section-title">קישורים מהירים</h2>
+          <div className="links-grid">
+            <button className="link-item" onClick={() => navigate('/siddur/birkat-hamazon')}>
+              <Sun size={20} className="link-icon" />
+              <span>ברכת המזון</span>
+            </button>
+            <button className="link-item" onClick={() => navigate('/siddur/parashat-haman')}>
+              <Sparkles size={20} className="link-icon" />
+              <span>פרשת המן</span>
+            </button>
+            <button className="link-item" onClick={() => navigate('/siddur/tefilat-hashlah')}>
+              <Heart size={20} className="link-icon" />
+              <span>תפילת השל״ה</span>
+            </button>
+            <button className="link-item" onClick={() => navigate('/tehillim')}>
+              <Moon size={20} className="link-icon" />
+              <span>תהילים</span>
+            </button>
           </div>
+        </section>
+
+        {/* Tools Section */}
+        <section className="tools-section">
+           <h2 className="section-title">כלים ועוד</h2>
+           <div className="tools-list">
+              <button className="tool-card" onClick={() => navigate('/tefilat-haderech')}>
+                <div className="tool-card-icon">🚗</div>
+                <div className="tool-card-info">
+                  <span className="tool-card-title">תפילת הדרך</span>
+                  <span className="tool-card-desc">תפילה והקראה ליוצאים לדרך</span>
+                </div>
+                <ChevronLeft size={20} />
+              </button>
+              
+              {context.isErevShabbat && (
+                <button className="tool-card special" onClick={() => navigate('/siddur/candle-lighting')}>
+                  <div className="tool-card-icon">🕯️</div>
+                  <div className="tool-card-info">
+                    <span className="tool-card-title">הדלקת נרות</span>
+                    <span className="tool-card-desc">סדר הדלקת נרות שבת</span>
+                  </div>
+                  <ChevronLeft size={20} />
+                </button>
+              )}
+           </div>
         </section>
       </div>
     </div>
+  );
+}
+
+function ZmanRow({ label, time, sub }: { label: string; time: Date | null; sub?: string }) {
+  if (!time) return null;
+  return (
+    <div className="zman-row">
+      <div className="zman-label">
+        <span>{label}</span>
+        {sub && <small>({sub})</small>}
+      </div>
+      <div className="zman-time">
+        {new Date(time).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
+      </div>
+    </div>
+  );
+}
+
+function PrayerCard({ title, icon, time, onClick, active }: { 
+  title: string; 
+  icon: React.ReactNode; 
+  time?: string; 
+  onClick: () => void;
+  active?: boolean;
+}) {
+  return (
+    <button className={`prayer-card ${active ? 'active' : ''}`} onClick={onClick}>
+      <div className="prayer-card-icon">{icon}</div>
+      <div className="prayer-card-info">
+        <span className="prayer-card-title">{title}</span>
+        {time && <span className="prayer-card-time">{time}</span>}
+      </div>
+    </button>
   );
 }

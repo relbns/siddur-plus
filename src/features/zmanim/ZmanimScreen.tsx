@@ -1,8 +1,35 @@
 import { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { HDate, HebrewCalendar } from '@hebcal/core';
+import { StandardHeader } from '../../shared/Header';
 import { useContextStore } from '../../core/stores';
 import type { AppContext } from '../../core/types';
 import './ZmanimScreen.css';
+
+const DAYS_HE = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+
+const HEB_MONTHS: Record<string, string> = {
+  Nisan: 'ניסן', Iyyar: 'אייר', Sivan: 'סיוון', Tamuz: 'תמוז', Av: 'אב',
+  Elul: 'אלול', Tishrei: 'תשרי', Cheshvan: 'חשוון', Kislev: 'כסליו',
+  Tevet: 'טבת', Shvat: 'שבט', Adar: 'אדר', 'Adar I': 'אדר א׳', 'Adar II': 'אדר ב׳',
+};
+
+function getMonthInfo(date: Date) {
+  const hd = new HDate(date);
+  const engMonth = hd.getMonthName();
+  const monthNameHe = HEB_MONTHS[engMonth] || engMonth;
+
+  const startOfMonth = new HDate(1, hd.getMonth(), hd.getFullYear());
+  const endOfMonth = new HDate(new HDate(1, hd.getMonth() + 1, hd.getFullYear()).abs() - 1);
+  
+  const events = HebrewCalendar.calendar({
+    start: startOfMonth.greg(),
+    end: endOfMonth.greg(),
+    il: true,
+    sedrot: true,
+  });
+
+  return { monthNameHe, events };
+}
 
 interface ZmanEntry {
   label: string;
@@ -16,8 +43,15 @@ function formatTime(date: Date | null | undefined): string | null {
 }
 
 export function ZmanimScreen() {
-  const navigate = useNavigate();
   const context = useContextStore((s: { context: AppContext | null }) => s.context);
+
+  const { monthNameHe, events } = useMemo(() => {
+    return context ? getMonthInfo(context.effectiveDate) : { monthNameHe: '', events: [] };
+  }, [context?.effectiveDate]);
+
+  const shabbatsList = useMemo(() => {
+    return events.filter(e => e.getDesc().startsWith('Parashat') || e.getDesc() === 'Shabbat Rosh Chodesh' || e.getDesc().includes('Shabbat'));
+  }, [events]);
 
   const zmanim = useMemo((): ZmanEntry[] => {
     if (!context?.zmanim) return [];
@@ -41,14 +75,10 @@ export function ZmanimScreen() {
 
   return (
     <div className="screen">
-      <header className="app-header">
-        <button className="reader-back-btn" onClick={() => navigate('/more')} aria-label="חזרה">←</button>
-        <h1>זמני היום</h1>
-        <div style={{ width: '2rem' }} />
-      </header>
+      <StandardHeader title="זמני היום" showBack={true} />
       <div className="container fade-in">
         <div className="zmanim-date">
-          {context?.hebrewDate ?? ''}
+          יום {context ? DAYS_HE[context.dayOfWeek] : ''}, {context?.hebrewDate ?? ''}
         </div>
 
         {zmanim.length === 0 ? (
@@ -73,6 +103,26 @@ export function ZmanimScreen() {
             <span className="zman-time-big">{formatTime(context.candleLighting as unknown as Date)}</span>
           </div>
         )}
+
+        <section style={{ marginTop: 'var(--space-6)', marginBottom: 'var(--space-8)' }}>
+          <h2 style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-3)' }}>חודש {monthNameHe} ושבתות</h2>
+          <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+            {events.filter(e => e.getDesc().includes('Molad')).map(e => (
+              <div key={e.getDesc()} style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 'var(--space-2)', borderBottom: '1px solid var(--color-border)' }}>
+                <span>מולד</span>
+                <span>{e.render('he')}</span>
+              </div>
+            ))}
+            
+            <div style={{ marginTop: 'var(--space-2)', fontWeight: 600 }}>שבתות החודש:</div>
+            {shabbatsList.map((e, i) => (
+              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)' }}>
+                <span>{e.getDate().renderGematriya(true).replace(/^[א-ת]+, /,'')}</span>
+                <span>{e.render('he').replace('פרשת ', '')}</span>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );

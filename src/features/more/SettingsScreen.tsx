@@ -1,16 +1,50 @@
+import { useState } from 'react';
+import { StandardHeader } from '../../shared/Header';
 import { useSettingsStore } from '../../core/stores';
 import type { UserSettings } from '../../core/types';
 
 export function SettingsScreen() {
   const settings = useSettingsStore();
+  const [isRequestingLocation, setIsRequestingLocation] = useState(false);
+
+  const requestLocation = () => {
+    if (!navigator.geolocation) {
+      alert('הדפדפן שלך אינו תומך בשירותי מיקום.');
+      return;
+    }
+
+    setIsRequestingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        settings.updateSetting('location', {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        });
+        
+        setIsRequestingLocation(false);
+        // Use a slight delay to ensure settings are saved before refresh
+        setTimeout(() => {
+          window.location.reload(); 
+        }, 500);
+      },
+      (err) => {
+        setIsRequestingLocation(false);
+        console.error(err);
+        if (err.code === 1) {
+          alert('גישה למיקום נדחתה. נא לאפשר הרשאות מיקום בהגדרות הדפדפן.');
+        } else {
+          alert('לא ניתן לקבל מיקום כרגע. בדוק חיבור לאינטרנט או נסה שוב.');
+        }
+      },
+      { timeout: 10000, enableHighAccuracy: true }
+    );
+  };
 
   return (
     <div className="screen">
-      <header className="app-header">
-        <h1>הגדרות</h1>
-      </header>
+      <StandardHeader title="הגדרות" showBack={true} />
       <div className="container fade-in" style={{ paddingTop: 'var(--space-4)' }}>
-        {/* Nusach */}
+        
         <SettingGroup label="נוסח תפילה">
           <select
             value={settings.nusach}
@@ -23,7 +57,6 @@ export function SettingsScreen() {
           </select>
         </SettingGroup>
 
-        {/* Region */}
         <SettingGroup label="מיקום">
           <select
             value={settings.region}
@@ -35,7 +68,17 @@ export function SettingsScreen() {
           </select>
         </SettingGroup>
 
-        {/* Font Scale */}
+        <SettingGroup label="מיקום מדויק (לזמנים)">
+          <button
+            className={`btn ${isRequestingLocation ? 'btn-loading' : 'btn-outline'}`}
+            onClick={requestLocation}
+            disabled={isRequestingLocation}
+            style={{ minWidth: '100px' }}
+          >
+            {isRequestingLocation ? 'מעדכן...' : settings.location ? 'עדכן מיקום' : 'הפעל מיקום'}
+          </button>
+        </SettingGroup>
+
         <SettingGroup label={`גודל טקסט: ${Math.round(settings.fontScale * 100)}%`}>
           <input
             type="range"
@@ -52,7 +95,6 @@ export function SettingsScreen() {
           />
         </SettingGroup>
 
-        {/* Nikud */}
         <SettingGroup label="הצגת ניקוד">
           <ToggleSwitch
             checked={settings.showNikud}
@@ -60,7 +102,6 @@ export function SettingsScreen() {
           />
         </SettingGroup>
 
-        {/* Theme */}
         <SettingGroup label="ערכת נושא">
           <select
             value={settings.theme}
@@ -77,7 +118,7 @@ export function SettingsScreen() {
             <option value="dark">כהה</option>
           </select>
         </SettingGroup>
-        {/* Prayer Mode Settings */}
+
         <SettingGroup label="השאר מסך דולק (בזמן תפילה)">
           <ToggleSwitch
             checked={settings.keepScreenAwake}
@@ -85,12 +126,6 @@ export function SettingsScreen() {
           />
         </SettingGroup>
 
-        <SettingGroup label="הקפץ תזכורת למצב שקט">
-          <ToggleSwitch
-            checked={settings.silentModeReminder}
-            onChange={(v) => settings.updateSetting('silentModeReminder', v)}
-          />
-        </SettingGroup>
       </div>
     </div>
   );

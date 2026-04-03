@@ -59,7 +59,7 @@ export const useContextStore = create<ContextState>()((set, get) => ({
     const { simulatedDate } = get();
     const settings = useSettingsStore.getState();
     const date = simulatedDate ?? new Date();
-    const ctx = buildContext(date, settings);
+    const ctx = buildContext(date, settings, settings.location || undefined);
     set({ context: ctx });
   },
 

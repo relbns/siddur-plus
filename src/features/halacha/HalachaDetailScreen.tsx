@@ -1,9 +1,9 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { StandardHeader } from '../../shared/Header';
 import { useHalachaFeed } from './useHalachaFeed';
 
 export function HalachaDetailScreen() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const feed = useHalachaFeed();
   
   const halacha = feed.find(h => h.id === id);
@@ -11,11 +11,7 @@ export function HalachaDetailScreen() {
   if (!halacha) {
     return (
       <div className="screen">
-        <header className="app-header">
-          <button className="reader-back-btn" onClick={() => navigate('/halacha')} aria-label="חזרה">←</button>
-          <h1>הלכה לא נמצאה</h1>
-          <div style={{ width: '2rem' }} />
-        </header>
+        <StandardHeader title="הלכה לא נמצאה" showBack={true} />
         <div className="container" style={{ padding: 'var(--space-4)', textAlign: 'center' }}>
           ההלכה שחיפשת אינה קיימת או שאינה קיימת בהקשר של היום.
         </div>
@@ -25,11 +21,7 @@ export function HalachaDetailScreen() {
 
   return (
     <div className="screen">
-      <header className="app-header">
-        <button className="reader-back-btn" onClick={() => navigate('/halacha')} aria-label="חזרה">←</button>
-        <h1>{halacha.title}</h1>
-        <div style={{ width: '2rem' }} />
-      </header>
+      <StandardHeader title={halacha.title} showBack={true} />
       
       <main className="container fade-in" style={{ padding: 'var(--space-4) 0' }}>
         <article style={{ background: 'var(--color-surface)', padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)' }}>

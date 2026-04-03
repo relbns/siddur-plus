@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { StandardHeader } from '../../shared/Header';
 import './MoreScreen.css';
 
 interface MenuItem {
@@ -43,9 +44,7 @@ const SECTIONS: { title: string; items: MenuItem[] }[] = [
 export function MoreScreen() {
   return (
     <div className="screen">
-      <header className="app-header">
-        <h1>עוד</h1>
-      </header>
+      <StandardHeader title="עוד" />
       <div className="container fade-in more-hub">
         {SECTIONS.map((section) => (
           <section key={section.title} className="more-section">

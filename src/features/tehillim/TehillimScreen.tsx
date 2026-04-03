@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Search } from 'lucide-react';
+import { StandardHeader } from '../../shared/Header';
 import { useContextStore, useTehillimStore } from '../../core/stores';
 import './TehillimScreen.css';
 
@@ -39,12 +41,14 @@ export function TehillimScreen() {
 
   return (
     <div className="screen">
-      <header className="app-header" style={{ justifyContent: 'space-between', padding: '0 var(--space-4)' }}>
-        <h1>תהילים</h1>
-        <Link to="/search" style={{ fontSize: '1.5rem', textDecoration: 'none', background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} aria-label="חיפוש">
-          🔍
-        </Link>
-      </header>
+      <StandardHeader 
+        title="תהילים" 
+        rightElement={
+          <Link to="/search" className="header-btn" aria-label="חיפוש">
+            <Search size={22} />
+          </Link>
+        }
+      />
 
       {/* Tabs */}
       <div className="tehillim-tabs">

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { StandardHeader } from '../../shared/Header';
 import { searchEngine, SearchResult } from './search-engine';
 import './SearchScreen.css';
 
@@ -27,9 +28,11 @@ export function SearchScreen() {
 
   return (
     <div className="screen">
-      <header className="app-header">
-        <button className="reader-back-btn" onClick={() => navigate(-1)} aria-label="חזרה">←</button>
-        <div style={{ flex: 1 }}>
+      <StandardHeader 
+        title="" 
+        showBack={true} 
+      >
+        <div style={{ flex: 1, padding: '0 var(--space-1)', position: 'relative', display: 'flex', alignItems: 'center' }}>
           <input 
             type="search" 
             className="search-input fade-in"
@@ -38,9 +41,42 @@ export function SearchScreen() {
             onChange={(e) => setQuery(e.target.value)}
             disabled={!isReady}
             autoFocus
+            style={{ 
+              width: '100%',
+              height: '40px',
+              border: 'none',
+              borderRadius: 'var(--radius-lg)',
+              padding: '0 var(--space-4)',
+              fontSize: 'var(--text-base)',
+              background: 'var(--color-primary-dark, rgba(0,0,0,0.2))',
+              color: 'white',
+              outline: 'none',
+              boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)'
+            }}
           />
+          {query.length > 0 && (
+            <button 
+              onClick={() => setQuery('')}
+              style={{
+                position: 'absolute',
+                left: 'var(--space-3)',
+                background: 'none',
+                border: 'none',
+                color: 'rgba(255,255,255,0.6)',
+                fontSize: '18px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '32px',
+                height: '32px'
+              }}
+            >
+              ✕
+            </button>
+          )}
         </div>
-      </header>
+      </StandardHeader>
       
       <main className="container" style={{ paddingTop: 'var(--space-4)', paddingBottom: 'calc(var(--nav-height) + var(--space-4))' }}>
         {results.length > 0 ? (

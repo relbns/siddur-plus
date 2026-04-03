@@ -1,39 +1,31 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { StandardHeader } from '../../shared/Header';
 import { useSettingsStore, useTehillimStore } from '../../core/stores';
 import type { TehillimChapter, UserSettings } from '../../core/types';
-import { usePrayerMode } from '../../shared/usePrayerMode';
 import './TehillimReader.css';
 
 /** Gematriya converter for chapter numbers */
 function toGematriya(n: number): string {
+  if (n <= 0) return '';
   const ones = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט'];
   const tens = ['', 'י', 'כ', 'ל', 'מ', 'נ', 'ס', 'ע', 'פ', 'צ'];
   const hundreds = ['', 'ק', 'ר', 'ש', 'ת'];
 
-  if (n === 15) return 'ט״ו';
-  if (n === 16) return 'ט״ז';
+  let num = n;
+  if (num === 15) return 'ט״ו';
+  if (num === 16) return 'ט״ז';
 
   let result = '';
-  if (n >= 100) {
-    result += hundreds[Math.floor(n / 100)] ?? '';
-    n %= 100;
-  }
-  if (n >= 10) {
-    result += tens[Math.floor(n / 10)] ?? '';
-    n %= 10;
-  }
-  if (n > 0) {
-    result += ones[n] ?? '';
-  }
+  if (num >= 100) { result += hundreds[Math.floor(num / 100)] ?? ''; num %= 100; }
+  if (num >= 10) { result += tens[Math.floor(num / 10)] ?? ''; num %= 10; }
+  if (num > 0) { result += ones[num] ?? ''; }
 
-  // Insert gershayim before last char
   if (result.length > 1) {
     result = result.slice(0, -1) + '״' + result.slice(-1);
   } else if (result.length === 1) {
     result += '׳';
   }
-
   return result;
 }
 
@@ -46,19 +38,16 @@ export function TehillimReader() {
   const [loading, setLoading] = useState(true);
   const [allChapters, setAllChapters] = useState<TehillimChapter[]>([]);
 
-  const { showDndToast } = usePrayerMode();
-
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch('./data/tehillim.json');
+        const res = await fetch('/data/tehillim.json');
         if (res.ok) {
           const data: TehillimChapter[] = await res.json();
           setAllChapters(data);
           const num = parseInt(chapterId ?? '1', 10);
           const ch = data.find((c) => c.number === num);
           setChapter(ch ?? null);
-          // Mark as read
           if (ch) {
             markChapterRead(ch.number);
           }
@@ -79,6 +68,19 @@ export function TehillimReader() {
     [navigate]
   );
 
+  const { verses, prevChapter, nextChapter } = useMemo(() => {
+    if (!chapter || !allChapters.length) return { verses: [], prevChapter: null, nextChapter: null };
+    
+    const text = showNikud ? chapter.contentHe : chapter.contentHeClean;
+    const v = text.split('\n');
+
+    const currentIndex = allChapters.findIndex((c) => c.number === chapter.number);
+    const prev = currentIndex > 0 ? allChapters[currentIndex - 1] : null;
+    const next = currentIndex < allChapters.length - 1 ? allChapters[currentIndex + 1] : null;
+
+    return { verses: v, prevChapter: prev, nextChapter: next };
+  }, [chapter, allChapters, showNikud]);
+
   if (loading) {
     return <div className="reader-loading">טוען...</div>;
   }
@@ -94,62 +96,37 @@ export function TehillimReader() {
     );
   }
 
-  const text = showNikud ? chapter.contentHe : chapter.contentHeClean;
-  const verses = text.split('\n');
-
-  // Find prev/next chapters in available data
-  const currentIndex = allChapters.findIndex((c) => c.number === chapter.number);
-  const prevChapter = currentIndex > 0 ? allChapters[currentIndex - 1] : null;
-  const nextChapter = currentIndex < allChapters.length - 1 ? allChapters[currentIndex + 1] : null;
-
   return (
     <div className="tehillim-reader">
-      {/* Header */}
-      <header className="reader-header">
-        <button className="reader-back-btn" onClick={() => navigate('/tehillim')} aria-label="חזרה">
-          ←
-        </button>
-        <h1>תהילים פרק {toGematriya(chapter.number)}</h1>
-        <div style={{ width: '2rem' }} />
-      </header>
+      <StandardHeader title={`תהילים פרק ${toGematriya(chapter.number)}`} showBack={true} backTo="/tehillim" />
 
-      {/* Content */}
-      <main className="reader-content container">
+      <main className="reader-content container fade-in">
         <div className="tehillim-chapter-body">
           {verses.map((verse, i) => (
             <p key={i} className="prayer-text tehillim-verse">
               <span className="verse-num">{toGematriya(i + 1)}</span>
-              {verse}
+              <span dangerouslySetInnerHTML={{ __html: verse }} />
             </p>
           ))}
         </div>
 
-        {/* Chapter read marker */}
         {isRead(chapter.number) && (
           <div className="chapter-read-badge">✓ קראת פרק זה</div>
         )}
 
-        {/* Navigation */}
         <nav className="chapter-nav">
           {prevChapter && (
             <button className="btn btn-outline" onClick={() => goToChapter(prevChapter.number)}>
-              פרק {toGematriya(prevChapter.number)} ←
+               ← פרק {toGematriya(prevChapter.number)}
             </button>
           )}
           {nextChapter && (
             <button className="btn btn-primary" onClick={() => goToChapter(nextChapter.number)}>
-              → פרק {toGematriya(nextChapter.number)}
+              פרק {toGematriya(nextChapter.number)} →
             </button>
           )}
         </nav>
       </main>
-
-      {/* DND Toast */}
-      {showDndToast && (
-        <div className="toast fade-in" style={{ bottom: 'var(--space-4)' }}>
-          🔕 אנא ודא שהמכשיר מוגדר על מצב שקט
-        </div>
-      )}
     </div>
   );
 }

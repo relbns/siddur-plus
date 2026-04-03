@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useContextStore } from './core/stores';
-import { BottomNav } from './shared/BottomNav';
+import { Sidebar } from './shared/Sidebar';
 import { TodayScreen } from './features/home/TodayScreen';
 import { SiddurScreen } from './features/siddur/SiddurScreen';
 import { PrayerReader } from './features/siddur/PrayerReader';
@@ -36,6 +36,7 @@ export default function App() {
   return (
     <HashRouter>
       <div className="app-root">
+        <Sidebar />
         <Routes>
           <Route path="/" element={<TodayScreen />} />
           <Route path="/siddur" element={<SiddurScreen />} />
@@ -53,7 +54,6 @@ export default function App() {
           <Route path="/settings" element={<SettingsScreen />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-        <BottomNav />
       </div>
     </HashRouter>
   );

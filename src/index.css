@@ -2,23 +2,23 @@
 
 :root {
   /* === Color Palette === */
-  --color-primary: #2563eb;         /* Blue */
-  --color-primary-light: #accce9;   /* Icon Hex */
-  --color-primary-dark: #1d4ed8;
+  --color-primary: #1e3a8a;         /* Deep Royal Blue */
+  --color-primary-light: #dbeafe;   /* Light Blue */
+  --color-primary-dark: #172554;
   --color-surface: #ffffff;
   --color-surface-alt: #f1f5f9;
   --color-bg: #f8fafc;
-  --color-text: #1e293b;
-  --color-text-secondary: #64748b;
+  --color-text: #0f172a;
+  --color-text-secondary: #475569;
   --color-text-muted: #94a3b8;
-  --color-border: #e2e8f0;
+  --color-border: #cbd5e1;
   --color-accent: #f59e0b;
   --color-error: #ef4444;
   --color-success: #22c55e;
 
   /* === Typography === */
   --font-ui: 'Noto Sans Hebrew', 'Segoe UI', sans-serif;
-  --font-prayer: 'Frank Ruhl Libre', 'David', serif;
+  --font-prayer: 'Noto Serif Hebrew', 'Frank Ruhl Libre', 'David', serif;
   --font-scale: 1;
   --text-xs: calc(0.75rem * var(--font-scale));
   --text-sm: calc(0.875rem * var(--font-scale));
@@ -129,13 +129,16 @@ body {
 
 .screen {
   min-height: 100dvh;
-  padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + var(--space-4));
+  padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + var(--space-8));
+  display: flex;
+  flex-direction: column;
 }
 
 .container {
-  max-width: 640px;
+  max-width: 720px;
   margin-inline: auto;
   padding-inline: var(--space-4);
+  width: 100%;
 }
 
 /* === Button Base === */
@@ -231,25 +234,6 @@ body {
 .nav-item svg {
   width: 1.5rem;
   height: 1.5rem;
-}
-
-/* === Header === */
-.app-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: var(--color-primary);
-  color: white;
-  padding: var(--space-3) var(--space-4);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: var(--header-height);
-}
-.app-header h1 {
-  font-family: var(--font-ui);
-  font-size: var(--text-lg);
-  font-weight: 600;
 }
 
 /* === Animations === */

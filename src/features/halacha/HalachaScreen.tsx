@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { StandardHeader } from '../../shared/Header';
 import { useHalachaFeed } from './useHalachaFeed';
 
 export function HalachaScreen() {
@@ -6,9 +7,7 @@ export function HalachaScreen() {
 
   return (
     <div className="screen">
-      <header className="app-header">
-        <h1>הלכה</h1>
-      </header>
+      <StandardHeader title="הלכה" />
       <div className="container fade-in" style={{ paddingTop: 'var(--space-4)' }}>
         <h2 className="section-title">הלכות רלוונטיות להיום</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>

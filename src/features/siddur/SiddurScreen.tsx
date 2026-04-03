@@ -1,58 +1,65 @@
 import { Link } from 'react-router-dom';
+import { Search, Sun, Sunset, Moon, Sunrise, Wheat, Droplets } from 'lucide-react';
+import { StandardHeader } from '../../shared/Header';
 import './SiddurScreen.css';
 
 const PRAYERS = [
-  { id: 'shacharit', title: 'שחרית', icon: '🌅', desc: 'תפילת הבוקר' },
-  { id: 'mincha', title: 'מנחה', icon: '☀️', desc: 'תפילת אחר הצהריים' },
-  { id: 'maariv', title: 'ערבית', icon: '🌙', desc: 'תפילת הערב' },
-  { id: 'bedtime-shema', title: 'קריאת שמע על המיטה', icon: '🌌', desc: '' },
+  { id: 'shacharit', title: 'שחרית', Icon: Sunrise },
+  { id: 'mincha', title: 'מנחה', Icon: Sun },
+  { id: 'maariv', title: 'ערבית', Icon: Sunset },
+  { id: 'bedtime-shema', title: 'קריאת שמע על המיטה', Icon: Moon },
 ];
 
 const BRACHOT = [
-  { id: 'birkat-hamazon', title: 'ברכת המזון', icon: '🍞' },
-  { id: 'mein-shalosh', title: 'מעין שלוש', icon: '🫒' },
-  { id: 'asher-yatzar', title: 'אשר יצר', icon: '🙏' },
+  { id: 'birkat-hamazon', title: 'ברכת המזון', Icon: Wheat },
+  { id: 'mein-shalosh', title: 'מעין שלוש', Icon: Wheat },
+  { id: 'asher-yatzar', title: 'אשר יצר', Icon: Droplets },
 ];
 
 export function SiddurScreen() {
   return (
     <div className="screen">
-      <header className="app-header" style={{ justifyContent: 'space-between', padding: '0 var(--space-4)' }}>
-        <h1>סידור</h1>
-        <Link to="/search" style={{ fontSize: '1.5rem', textDecoration: 'none', background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} aria-label="חיפוש">
-          🔍
-        </Link>
-      </header>
+      <StandardHeader 
+        title="סידור" 
+        rightElement={
+          <Link to="/search" className="header-btn" aria-label="חיפוש">
+            <Search size={22} />
+          </Link>
+        }
+      />
 
       <div className="container fade-in">
         <section className="siddur-section">
           <h2 className="section-title">תפילות יומיות</h2>
           <div className="prayer-list">
-            {PRAYERS.map((p) => (
-              <Link key={p.id} to={`/siddur/${p.id}`} className="prayer-list-item card">
-                <span className="prayer-item-icon">{p.icon}</span>
-                <div className="prayer-item-text">
-                  <span className="prayer-item-title">{p.title}</span>
-                  {p.desc && <span className="prayer-item-desc">{p.desc}</span>}
-                </div>
-                <span className="prayer-item-arrow">‹</span>
-              </Link>
-            ))}
+            {PRAYERS.map((p) => {
+              const Icon = p.Icon;
+              return (
+                <Link key={p.id} to={`/siddur/${p.id}`} className="prayer-list-item card" style={{ textDecoration: 'none' }}>
+                  <Icon size={24} style={{ color: 'var(--color-primary)' }} />
+                  <div className="prayer-item-text">
+                    <span className="prayer-item-title" style={{ color: 'var(--color-text)' }}>{p.title}</span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </section>
 
         <section className="siddur-section">
           <h2 className="section-title">ברכות</h2>
           <div className="prayer-list">
-            {BRACHOT.map((b) => (
-              <Link key={b.id} to={`/siddur/${b.id}`} className="prayer-list-item card">
-                <span className="prayer-item-icon">{b.icon}</span>
-                <div className="prayer-item-text">
-                  <span className="prayer-item-title">{b.title}</span>
-                </div>
-                <span className="prayer-item-arrow">‹</span>
-              </Link>
-            ))}
+            {BRACHOT.map((b) => {
+              const Icon = b.Icon;
+              return (
+                <Link key={b.id} to={`/siddur/${b.id}`} className="prayer-list-item card" style={{ textDecoration: 'none' }}>
+                  <Icon size={24} style={{ color: 'var(--color-primary)' }} />
+                  <div className="prayer-item-text">
+                    <span className="prayer-item-title" style={{ color: 'var(--color-text)' }}>{b.title}</span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </section>
       </div>

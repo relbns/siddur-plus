@@ -1,9 +1,9 @@
+import { StandardHeader } from '../../shared/Header';
+
 export function AboutScreen() {
   return (
     <div className="screen">
-      <header className="app-header">
-        <h1>אודות</h1>
-      </header>
+      <StandardHeader title="אודות" showBack={true} />
       <div className="container fade-in" style={{ paddingTop: 'var(--space-6)', textAlign: 'center' }}>
         {/* App Info */}
         <div style={{ marginBottom: 'var(--space-8)' }}>
@@ -21,35 +21,52 @@ export function AboutScreen() {
         {/* Memorial Section */}
         <div className="card" style={{
           textAlign: 'center',
-          padding: 'var(--space-6)',
-          borderRight: '4px solid var(--color-primary)',
-          marginBottom: 'var(--space-6)',
+          padding: 'var(--space-8) var(--space-4)',
+          borderTop: '6px solid var(--color-primary)',
+          borderRadius: 'var(--radius-xl)',
+          marginBottom: 'var(--space-8)',
+          background: 'linear-gradient(to bottom, var(--color-surface), var(--color-bg))',
+          boxShadow: 'var(--shadow-lg)'
         }}>
           <h3 style={{
             fontFamily: 'var(--font-prayer)',
-            fontSize: 'var(--text-2xl)',
+            fontSize: 'var(--text-3xl)',
             color: 'var(--color-primary)',
             marginBottom: 'var(--space-4)',
+            letterSpacing: '0.02em'
           }}>
             לעילוי נשמת
           </h3>
-          <p style={{
+          <div style={{
+            fontFamily: 'var(--font-prayer)',
+            fontSize: 'var(--text-xl)',
+            lineHeight: 1.8,
+            color: 'var(--color-text)',
+            marginBottom: 'var(--space-4)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 'var(--space-1)'
+          }}>
+            {/* User filled in grandparents' names */}
+            <div>ר׳ משה אליעזר בן ר׳ צבי</div>
+            <div>מרת שרה צינה בת אהרון לייב</div>
+            <div>ר׳ מרדכי איסר בן ר׳ מנחם מנדל</div>
+            <div>מרת מאשה בת ר׳ אשר</div>
+          </div>
+          <div style={{
+            width: '60px',
+            height: '2px',
+            background: 'var(--color-border)',
+            margin: '0 auto var(--space-4)'
+          }} />
+          <div style={{
             fontFamily: 'var(--font-prayer)',
             fontSize: 'var(--text-lg)',
-            lineHeight: 2,
-            color: 'var(--color-text)',
-          }}>
-            {/* User will fill in grandparents' names */}
-            סבא וסבתא ז״ל
-          </p>
-          <p style={{
-            fontFamily: 'var(--font-prayer)',
-            fontSize: 'var(--text-base)',
             color: 'var(--color-text-secondary)',
-            marginTop: 'var(--space-3)',
+            opacity: 0.8
           }}>
             תהא נשמתם צרורה בצרור החיים
-          </p>
+          </div>
         </div>
 
         {/* Credits */}

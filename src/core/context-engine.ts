@@ -22,15 +22,20 @@ export function buildContext(
   const dow = date.getDay();
   const isIsrael = settings.region === 'israel';
 
-  // Build location if we have coords
-  const location = geolocation
+  // Build location if we have coords, or use Jerusalem as fallback for Zmanim if region is Israel
+  let location = geolocation
     ? new Location(
         geolocation.lat,
         geolocation.lng,
         isIsrael,
-        'Asia/Jerusalem' // Fallback TZ
+        'Asia/Jerusalem'
       )
     : undefined;
+
+  // Fallback to Jerusalem for Israel users if no geolocation (e.g. non-secure context)
+  if (!location && isIsrael) {
+    location = new Location(31.7683, 35.2137, true, 'Asia/Jerusalem');
+  }
 
   const events = HebrewCalendar.calendar({
     start: date,
@@ -94,8 +99,9 @@ export function buildContext(
       holidayName = ev.render('he-x-NoNikud');
     }
 
-    if (ev instanceof OmerEvent) {
-      sefiraDay = ev.omer;
+    // Check for Omer
+    if (ev instanceof OmerEvent || (mask & hebcalFlags.OMER_COUNT)) {
+      sefiraDay = (ev as any).omer || (ev as any).count;
       sefiraDayHe = ev.render('he-x-NoNikud');
     }
 
@@ -109,12 +115,32 @@ export function buildContext(
     if (desc.includes('Yom Kippur')) isYomKippur = true;
   }
 
-  // Parasha fallback (only on regular weeks — during holidays, Sedra can return English)
-  if (!parasha && !isYomTov && !isCholHamoed) {
+  // Calculate Havdalah on Erev Shabbat for the upcoming Saturday
+  if (isErevShabbat && !havdalah && location) {
+    const saturday = new Date(date);
+    saturday.setDate(saturday.getDate() + 1);
+    const shabbatEvents = HebrewCalendar.calendar({
+      start: saturday,
+      end: saturday,
+      location,
+      il: isIsrael,
+      candlelighting: true,
+    });
+    for (const ev of shabbatEvents) {
+      if (ev.getFlags() & hebcalFlags.YOM_TOV_ENDS) {
+        havdalah = (ev as unknown as { eventTime?: Date }).eventTime ?? null;
+      }
+    }
+  }
+
+  // Parasha fallback (always show Parasha, especially on Fridays, even during holidays)
+  if (!parasha) {
     try {
       const sedra = new Sedra(hDate.getFullYear(), isIsrael);
-      const parts = sedra.getString(hDate, 'he-x-NoNikud');
-      // Skip if it contains Latin characters (English holiday names)
+      
+      // Get upcoming Shabbat sedra
+      const nextShabbat = hDate.onOrAfter(6);
+      const parts = sedra.getString(nextShabbat, 'he-x-NoNikud');
       if (parts && !/[a-zA-Z]/.test(parts)) {
         parasha = parts;
       }
@@ -218,6 +244,11 @@ export function buildContext(
   else contextFlags.push('MASHIV_HARUACH');
   if (barechAleinu) contextFlags.push('BARECH_ALEINU');
   else contextFlags.push('BARECH_ALEINU_SUMMER');
+
+  // Prayer Mode flags
+  if (settings.prayerMode === 'chazan') contextFlags.push('MODE_CHAZAN');
+  else if (settings.prayerMode === 'yachid') contextFlags.push('MODE_YACHID');
+  else contextFlags.push('MODE_REGULAR');
 
   return {
     effectiveDate: date,

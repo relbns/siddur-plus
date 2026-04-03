@@ -138,7 +138,10 @@ export interface UserSettings {
   showNikud: boolean;
   theme: 'light' | 'dark' | 'auto';
   keepScreenAwake: boolean;
-  silentModeReminder: boolean;
+  prayerMode: 'regular' | 'chazan' | 'yachid';
+  isMournerHouse: boolean;
+  forceNoTachanun: boolean;
+  location: { lat: number; lng: number } | null;
 }
 
 export const DEFAULT_SETTINGS: UserSettings = {
@@ -148,5 +151,8 @@ export const DEFAULT_SETTINGS: UserSettings = {
   showNikud: true,
   theme: 'auto',
   keepScreenAwake: true,
-  silentModeReminder: true,
+  prayerMode: 'regular',
+  isMournerHouse: false,
+  forceNoTachanun: false,
+  location: null,
 };

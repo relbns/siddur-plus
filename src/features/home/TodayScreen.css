@@ -1,129 +1,332 @@
-.today-header {
-  background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
-  color: white;
-  padding: var(--space-6) var(--space-4) var(--space-8);
-  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
-}
-.today-date-block {
+.today-page-header {
+  padding: var(--space-6) 0 var(--space-4);
   text-align: center;
 }
+
 .today-hebrew-date {
   font-family: var(--font-prayer);
   font-size: var(--text-3xl);
   font-weight: 700;
+  color: var(--color-primary);
   margin-bottom: var(--space-1);
 }
+
 .today-day-name {
   font-size: var(--text-lg);
-  opacity: 0.9;
+  color: var(--color-text-secondary);
+  font-weight: 500;
 }
+
 .today-holiday {
-  font-size: var(--text-lg);
-  font-weight: 600;
-  opacity: 0.95;
-  margin-top: var(--space-1);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--color-accent);
+  margin-top: var(--space-2);
+  font-family: var(--font-prayer);
 }
-.today-parasha {
-  font-size: var(--text-sm);
-  opacity: 0.75;
-  margin-top: var(--space-1);
+
+.parasha-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-primary-lightest);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-primary-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.parasha-label {
+  font-size: var(--text-xs);
+  color: var(--color-primary-dark);
+  font-weight: 800;
+  opacity: 0.7;
+}
+
+.parasha-value {
+  font-size: var(--text-base);
+  color: var(--color-primary);
+  font-weight: 700;
+  font-family: var(--font-prayer);
 }
 
 /* Badges */
 .today-badges {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
   justify-content: center;
-  margin-top: calc(-1 * var(--space-4));
-  margin-bottom: var(--space-4);
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  margin-bottom: var(--space-6);
 }
+
 .badge {
-  background: var(--color-accent);
-  color: #1e293b;
   padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-full);
   font-size: var(--text-xs);
-  font-weight: 600;
-  box-shadow: var(--shadow-sm);
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
-/* Prayer Card */
-.today-prayer-card {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  margin-bottom: var(--space-4);
-  cursor: pointer;
-}
-.today-prayer-card:active {
-  transform: scale(0.98);
-}
-.prayer-card-icon {
-  font-size: 2.5rem;
-}
-.prayer-card-label {
-  font-size: var(--text-xs);
-  color: var(--color-text-secondary);
-}
-.prayer-card-name {
-  font-size: var(--text-xl);
-  font-weight: 600;
+.badge-primary {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
 }
 
-/* Info Grid */
-.today-info-section {
-  margin-bottom: var(--space-4);
+.badge-accent {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
 }
+
+/* Prayers Selection */
+.prayers-section {
+  margin-bottom: var(--space-8);
+}
+
 .section-title {
   font-size: var(--text-sm);
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
   font-weight: 600;
-  margin-bottom: var(--space-3);
-}
-.today-info-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-.info-chip {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
+  margin-bottom: var(--space-4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-/* Actions */
-.today-actions {
-  margin-bottom: var(--space-6);
-}
-.action-grid {
+.prayer-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-3);
 }
-.action-card {
+
+.prayer-card {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  padding: var(--space-4) var(--space-2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.prayer-card:hover {
+  border-color: var(--color-primary);
+  background: var(--color-bg);
+}
+
+.prayer-card.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.prayer-card-icon {
+  margin-bottom: var(--space-2);
+  opacity: 0.8;
+}
+
+.prayer-card.active .prayer-card-icon {
+  opacity: 1;
+}
+
+.prayer-card-title {
+  font-weight: 700;
+  font-size: var(--text-lg);
+}
+
+.prayer-card-time {
+  font-size: 10px;
+  margin-top: 2px;
+  opacity: 0.7;
+}
+
+/* Zmanim Grid */
+.zmanim-section {
+  margin-bottom: var(--space-8);
+}
+
+.zmanim-grid {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: white;
+}
+
+.zman-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.zman-row:last-child {
+  border-bottom: none;
+}
+
+.zman-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.zman-label span {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.zman-label small {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.zman-time {
+  font-family: var(--font-ui);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+/* Shabbat Card */
+.shabbat-section {
+  margin-bottom: var(--space-8);
+}
+
+.shabbat-card {
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  color: white;
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-lg);
+}
+
+.shabbat-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: var(--space-2);
+}
+
+.shabbat-card-header h3 {
+  font-family: var(--font-prayer);
+  font-size: var(--text-xl);
+  margin: 0;
+}
+
+/* Links Grid */
+.quick-links {
+  margin-bottom: var(--space-8);
+}
+
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.link-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: var(--space-2);
   padding: var(--space-4);
   background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
   color: var(--color-text);
+  font-family: var(--font-ui);
+}
+
+.link-item:hover {
+  border-color: var(--color-primary);
+  background: var(--color-bg);
+}
+
+.link-icon {
+  color: var(--color-primary);
+  opacity: 0.8;
+}
+
+.link-item span {
+  font-weight: 600;
   font-size: var(--text-sm);
-  font-weight: 500;
-  transition: transform var(--transition-fast);
 }
-.action-card:active {
-  transform: scale(0.95);
+
+/* Tools Section */
+.tools-section {
+  margin-bottom: var(--space-8);
 }
-.action-icon {
-  font-size: 1.8rem;
+
+.tools-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.tool-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: right;
+  width: 100%;
+}
+
+.tool-card:hover {
+  border-color: var(--color-primary);
+  background: var(--color-bg);
+}
+
+.tool-card.special {
+   background: linear-gradient(to left, #fff7ed, var(--color-surface));
+   border-right: 4px solid #f97316;
+}
+
+.tool-card-icon {
+  font-size: 24px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  border-radius: var(--radius-lg);
+}
+
+.tool-card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tool-card-title {
+  font-weight: 700;
+  font-size: var(--text-base);
+  color: var(--color-text);
+}
+
+.tool-card-desc {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
 }
