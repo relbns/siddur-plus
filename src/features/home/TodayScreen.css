@@ -330,3 +330,123 @@
   font-size: var(--text-xs);
   color: var(--color-text-muted);
 }
+
+/* Day title (Shabbat / Erev Shabbat) */
+.today-day-title {
+  font-family: var(--font-prayer);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  margin-top: var(--space-2);
+  color: var(--color-text);
+}
+.today-day-title.shabbat {
+  color: #1e40af;
+}
+.today-day-title.erev-shabbat {
+  color: #1d4ed8;
+}
+
+/* Shabbat parasha / haftara */
+.parasha-name {
+  display: block;
+  font-family: var(--font-prayer);
+  font-size: var(--text-lg);
+  color: rgba(255,255,255,0.9);
+  margin-top: 2px;
+}
+.haftarah-name {
+  font-size: var(--text-sm);
+  color: rgba(255,255,255,0.75);
+  margin-top: 2px;
+}
+.shabbat-candle-icon {
+  font-size: 2rem;
+  margin-left: var(--space-3);
+}
+
+/* Time rows in Shabbat card */
+.time-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  font-size: var(--text-base);
+}
+.time-row:last-child { border-bottom: none; }
+.time-row strong { font-size: var(--text-xl); font-weight: 700; }
+
+/* Highlighted zman row */
+.zman-highlight {
+  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+}
+.zman-highlight .zman-time {
+  color: var(--color-primary);
+}
+
+/* Section title row with link */
+.section-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+.section-link-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  padding: 0;
+}
+
+/* Month info */
+.month-info-section {
+  margin-bottom: var(--space-8);
+}
+.month-info-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-xl);
+}
+.month-info-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  font-family: var(--font-prayer);
+}
+.month-info-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.month-info-sub {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-right: var(--space-2);
+}
+.month-calendar-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font-ui);
+  margin-top: var(--space-1);
+}
+
+/* Badge warning */
+.badge-warning {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+

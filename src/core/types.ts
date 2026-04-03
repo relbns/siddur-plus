@@ -10,9 +10,11 @@ export type Predicate =
 // --- Content Nodes ---
 export interface ContentNode {
   id: string;
-  type: 'text' | 'heading' | 'instruction' | 'group';
+  type: 'text' | 'heading' | 'instruction' | 'group' | 'zman-marker';
   contentHe: string;
   contentHeClean: string;
+  /** For zman-marker: which zman key to display (e.g. 'sunset', 'sunrise') */
+  zmanKey?: keyof ZmanimSet;
   children?: ContentNode[];
   renderCondition?: Predicate;
 }
@@ -92,7 +94,9 @@ export interface AppContext {
   hebrewDate: string;
   dayOfWeek: number;
   parasha: string | null;
+  haftarah: string | null;
   holidayName: string | null;
+  moladStr: string | null;
 
   zmanim: ZmanimSet | null;
   currentTimeSlot: 'morning' | 'afternoon' | 'evening' | 'night';

@@ -1,6 +1,33 @@
 .content-renderer {
   padding-block: var(--space-2);
 }
+
+/* ===== Heading styles ===== */
+.heading-prayer {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-primary);
+  font-weight: 700;
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+}
+
+.heading-prayer::before {
+  content: "";
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--color-primary);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
 .heading-kaddish {
   font-family: var(--font-ui);
   font-size: var(--text-sm);
@@ -23,48 +50,111 @@
   border-radius: var(--radius-full);
 }
 
+/* ===== Instruction block ===== */
+.instruction-block {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin-block: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: color-mix(in srgb, var(--color-primary) 5%, transparent);
+  border-radius: var(--radius-md);
+  border-right: 3px solid var(--color-primary-light);
+}
+
+.instruction-marker {
+  color: var(--color-primary);
+  font-size: var(--text-xs);
+  flex-shrink: 0;
+  margin-top: 3px;
+  opacity: 0.6;
+}
+
+.instruction-text {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+  margin: 0;
+  font-style: italic;
+}
+
+/* ===== Zman Marker (inline halachic time) ===== */
+.zman-marker-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-block: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-lg);
+  font-family: var(--font-ui);
+}
+
+.zman-marker-label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.zman-marker-time {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* ===== Prayer text ===== */
 .prayer-text-block {
   margin-bottom: var(--space-4);
 }
-.prayer-text-block .prayer-text {
-  text-indent: 0;
-}
-.content-group {
-  margin-block: var(--space-3);
-  padding-right: var(--space-2);
-  border-right: 3px solid var(--color-primary);
+
+.prayer-text {
+  line-height: var(--leading-prayer, 2);
+  margin-bottom: var(--space-1);
 }
 
-/* Variable prayer text styling */
+/* Variable prayer text — season/context dependent */
 .prayer-variable {
-  color: var(--color-primary-dark);
-  font-weight: 600;
+  color: var(--color-primary);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
 }
+
 [data-theme="dark"] .prayer-variable {
-  color: #60a5fa; /* light blue for dark mode */
+  color: #60a5fa;
+}
+
+/* Group node */
+.content-group {
+  margin-block: var(--space-3);
+  padding-right: var(--space-3);
+  border-right: 3px solid var(--color-primary-light);
 }
 
 /* Inline small instructions */
 .instruction-inline {
-  font-size: 0.75em;
+  font-size: 0.78em;
   color: var(--color-text-muted);
   font-family: var(--font-ui);
   display: inline-block;
   margin: 0 var(--space-1);
+  font-style: italic;
 }
 
 /* Collapsible long instructions */
 .instruction-details {
-  margin-block: var(--space-2);
-  background-color: rgba(0, 0, 0, 0.03);
+  margin-block: var(--space-3);
+  background-color: color-mix(in srgb, var(--color-primary) 4%, transparent);
   border-radius: var(--radius-md);
   overflow: hidden;
-  transition: all var(--transition-fast);
+  border: 1px solid var(--color-border);
 }
 
 .instruction-details[open] {
-  background: white;
-  border-style: solid;
+  border-color: var(--color-primary-light);
 }
 
 .instruction-details summary {
@@ -72,7 +162,8 @@
   cursor: pointer;
   font-size: var(--text-xs);
   color: var(--color-text-muted);
-  list-style: none; /* remove default arrow */
+  font-family: var(--font-ui);
+  list-style: none;
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -81,6 +172,7 @@
 .instruction-details summary::before {
   content: "💡";
   font-size: 14px;
+  flex-shrink: 0;
 }
 
 .instruction-details summary:hover {
@@ -91,6 +183,7 @@
 .instruction-content {
   padding: var(--space-4);
   font-size: var(--text-sm);
+  font-family: var(--font-ui);
   line-height: var(--leading-relaxed);
   border-top: 1px solid var(--color-border);
   color: var(--color-text-secondary);

@@ -16,6 +16,9 @@ import { SettingsScreen } from './features/more/SettingsScreen';
 import { ZmanimScreen } from './features/zmanim/ZmanimScreen';
 import { TefilatHaDerech } from './features/prayer/TefilatHaDerech';
 import { DateConverter } from './features/tools/DateConverter';
+import { CalendarScreen } from './features/calendar/CalendarScreen';
+import { NotificationsScreen } from './features/notifications/NotificationsScreen';
+import { KiddushScreen } from './features/kiddush/KiddushScreen';
 
 export default function App() {
   const refreshContext = useContextStore((s) => s.refreshContext);
@@ -47,6 +50,9 @@ export default function App() {
           <Route path="/halacha" element={<HalachaScreen />} />
           <Route path="/halacha/:id" element={<HalachaDetailScreen />} />
           <Route path="/zmanim" element={<ZmanimScreen />} />
+          <Route path="/calendar" element={<CalendarScreen />} />
+          <Route path="/notifications" element={<NotificationsScreen />} />
+          <Route path="/kiddush" element={<KiddushScreen />} />
           <Route path="/tefilat-haderech" element={<TefilatHaDerech />} />
           <Route path="/date-converter" element={<DateConverter />} />
           <Route path="/more" element={<MoreScreen />} />

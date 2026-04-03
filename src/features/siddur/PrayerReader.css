@@ -1,17 +1,18 @@
 .prayer-reader {
   min-height: 100dvh;
   background: var(--color-bg);
+  --reader-font-scale: 1;
 }
 
-/* We now use StandardHeader, so we only need to polish the reader-specific parts */
-
-/* Section navigation */
+/* Settings dropdown */
 .prayer-settings-dropdown {
   position: absolute;
   top: 100%;
   left: var(--space-2);
+  right: var(--space-2);
   margin-top: var(--space-1);
-  width: 240px;
+  max-width: 280px;
+  margin-left: auto;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -21,33 +22,127 @@
   z-index: 300;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
   text-align: right;
 }
 
-.reader-settings-btn {
-  display: none; /* Handled by StandardHeader */
-}
-
 .settings-title {
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   color: var(--color-primary);
   font-weight: 700;
   margin-bottom: var(--space-1);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .settings-radio, .settings-checkbox {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
   cursor: pointer;
 }
 
-/* Section Dropdown Navigation */
+/* Nusach switcher */
+.nusach-switcher {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.nusach-btn {
+  flex: 1;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  transition: all 0.15s;
+  text-align: center;
+}
+
+.nusach-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.nusach-btn.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+  font-weight: 700;
+}
+
+/* Reader header actions */
+.reader-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.font-size-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  margin-left: var(--space-1);
+}
+
+.font-btn { padding: 4px; line-height: 1; }
+.font-btn-large { align-self: flex-end; }
+.font-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.header-btn.shared { color: var(--color-primary); }
+
+.share-toast {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: var(--space-1);
+  background: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-sm);
+  padding: 2px 8px;
+  font-size: var(--text-xs);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 500;
+}
+
+/* Context bar (badges below section nav) */
+.reader-context-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  padding: var(--space-2) 0 var(--space-3);
+  align-items: center;
+}
+
+.reader-nusach-badge {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 1px var(--space-2);
+}
+
+.reader-badge {
+  font-size: var(--text-xs);
+  border-radius: var(--radius-full);
+  padding: 1px var(--space-2);
+  font-weight: 600;
+}
+.reader-badge.shabbat { background: #dbeafe; color: #1e40af; }
+.reader-badge.yomtov { background: #dcfce7; color: #166534; }
+.reader-badge.sefirah { background: #fef9c3; color: #854d0e; }
+.reader-badge.no-tachanun { background: #fce7f3; color: #9d174d; }
+
+/* Section Dropdown */
 .section-dropdown-nav {
   position: sticky;
-  top: 56px; /* Matches --header-height, 56px */
+  top: 56px;
   z-index: 150;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
@@ -55,10 +150,7 @@
   box-shadow: var(--shadow-sm);
 }
 
-.custom-select-container {
-  position: relative;
-  width: 100%;
-}
+.custom-select-container { position: relative; width: 100%; }
 
 .custom-select-trigger {
   width: 100%;
@@ -77,10 +169,8 @@
   box-shadow: var(--shadow-sm);
 }
 
-.select-arrow {
-  font-size: 0.8em;
-  color: var(--color-primary);
-}
+.select-arrow { color: var(--color-primary); transition: transform 0.2s; }
+.select-arrow.open { transform: rotate(180deg); }
 
 .custom-select-menu {
   position: absolute;
@@ -108,22 +198,14 @@
   font-size: inherit;
   cursor: pointer;
   border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  transition: background 0.12s;
 }
+.custom-select-option:last-child { border-bottom: none; }
+.custom-select-option:hover { background: var(--color-primary-light); }
+.custom-select-option.active { background: var(--color-primary); color: white; }
 
-.custom-select-option:last-child {
-  border-bottom: none;
-}
-
-.custom-select-option:hover {
-  background: var(--color-primary-light);
-}
-
-.custom-select-option.active {
-  background: var(--color-primary);
-  color: white;
-}
-
-/* Omitted sections (Tachanun, etc) */
+/* Omitted sections */
 .omitted-section {
   border: 1px dashed var(--color-border);
   border-radius: var(--radius-lg);
@@ -131,11 +213,7 @@
   margin-bottom: var(--space-6);
   background: var(--color-bg);
 }
-
-.omitted-details {
-  width: 100%;
-}
-
+.omitted-details { width: 100%; }
 .omitted-summary {
   cursor: pointer;
   padding: var(--space-2) var(--space-3);
@@ -145,46 +223,35 @@
   gap: var(--space-2);
   list-style: none;
 }
-.omitted-summary::-webkit-details-marker {
-  display: none;
-}
-
-.omitted-title {
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  text-decoration: line-through;
-  opacity: 0.7;
-}
-
-.omitted-reason {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-}
-
+.omitted-summary::-webkit-details-marker { display: none; }
+.omitted-title { font-weight: 600; color: var(--color-text-secondary); text-decoration: line-through; opacity: 0.7; }
+.omitted-reason { font-size: var(--text-sm); color: var(--color-text-muted); }
 .omitted-content {
   padding: var(--space-3) var(--space-2);
   border-top: 1px dashed var(--color-border);
   margin-top: var(--space-2);
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
-/* Reader content */
+/* Reader content with dynamic font scale */
 .reader-content {
   padding-top: var(--space-4);
   padding-bottom: var(--space-12);
+  font-size: calc(1.05rem * var(--reader-font-scale, 1));
 }
-.reader-section {
-  margin-bottom: var(--space-8);
-}
+
+.reader-section { margin-bottom: var(--space-8); }
+
 .reader-section-title {
   font-family: var(--font-prayer);
-  font-size: var(--text-2xl);
+  font-size: calc(1.2rem * var(--reader-font-scale, 1));
   color: var(--color-primary);
   font-weight: 700;
   text-align: center;
   margin-bottom: var(--space-4);
   padding-bottom: var(--space-3);
-  border-bottom: 2px solid var(--color-border);
+  border-bottom: 2px solid var(--color-primary-light);
+  letter-spacing: 0.01em;
 }
 
 /* Loading */
@@ -196,4 +263,5 @@
   min-height: 100dvh;
   font-size: var(--text-lg);
   color: var(--color-text-secondary);
+  gap: var(--space-4);
 }

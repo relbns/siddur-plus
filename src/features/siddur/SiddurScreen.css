@@ -1,43 +1,246 @@
+/* Context strip */
+.siddur-context-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-3) 0 var(--space-1);
+}
+
+.siddur-ctx-badge {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  padding: var(--space-1) var(--space-3);
+  font-family: var(--font-ui);
+}
+
+.siddur-ctx-badge.shabbat { background: #dbeafe; color: #1e40af; }
+.siddur-ctx-badge.yomtov { background: #dcfce7; color: #166534; }
+.siddur-ctx-badge.chol { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+.siddur-ctx-badge.sefirah { background: #fef9c3; color: #854d0e; }
+
+/* Section */
 .siddur-section {
   margin-top: var(--space-5);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-2);
 }
-.prayer-list {
+
+/* Prayer list */
+.siddur-prayer-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
 }
-.prayer-list-item {
+
+.siddur-prayer-row {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  width: 100%;
-  text-align: right;
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-xl);
   cursor: pointer;
-  border: none;
-  transition: transform var(--transition-fast);
+  transition: all 0.18s;
+  text-align: right;
+  width: 100%;
 }
-.prayer-list-item:active {
-  transform: scale(0.98);
+
+.siddur-prayer-row:hover {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 4%, var(--color-surface));
 }
-.prayer-item-icon {
-  font-size: 1.6rem;
+
+.siddur-prayer-row.recommended {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface));
+  box-shadow: 0 2px 12px -4px color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+.siddur-prayer-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
   flex-shrink: 0;
 }
-.prayer-item-text {
+
+.siddur-prayer-row.recommended .siddur-prayer-icon {
+  background: var(--color-primary);
+  color: white;
+}
+
+.siddur-prayer-info {
   flex: 1;
   display: flex;
   flex-direction: column;
+  gap: 3px;
+  text-align: right;
 }
-.prayer-item-title {
+
+.siddur-prayer-title {
+  font-weight: 700;
   font-size: var(--text-base);
-  font-weight: 600;
+  color: var(--color-text);
+  font-family: var(--font-ui);
 }
-.prayer-item-desc {
+
+.siddur-prayer-time {
   font-size: var(--text-xs);
-  color: var(--color-text-secondary);
-}
-.prayer-item-arrow {
-  font-size: var(--text-xl);
   color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  justify-content: flex-end;
+  font-family: var(--font-ui);
+}
+
+.siddur-recommended-badge {
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-full);
+  padding: 2px var(--space-2);
+  flex-shrink: 0;
+}
+
+.siddur-prayer-arrow {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+/* Kiddush card */
+.siddur-kiddush-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: linear-gradient(135deg, #312e81, #4338ca);
+  border: none;
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: all 0.18s;
+  text-align: right;
+  width: 100%;
+  color: white;
+  box-shadow: 0 4px 16px -4px rgba(67, 56, 202, 0.4);
+}
+
+.siddur-kiddush-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px -4px rgba(67, 56, 202, 0.5);
+}
+
+.siddur-kiddush-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.siddur-kiddush-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: right;
+}
+
+.siddur-kiddush-card .siddur-prayer-title {
+  color: white;
+  font-size: var(--text-lg);
+}
+
+.siddur-kiddush-card .siddur-prayer-time {
+  color: rgba(255,255,255,0.75);
+  justify-content: flex-end;
+  font-size: var(--text-sm);
+}
+
+.siddur-kiddush-card .siddur-prayer-arrow {
+  color: rgba(255,255,255,0.7);
+}
+
+/* Bracha cards */
+.siddur-bracha-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+
+.siddur-bracha-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  text-decoration: none;
+  color: var(--color-text);
+  transition: all 0.15s;
+  text-align: center;
+}
+
+.siddur-bracha-card:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.siddur-bracha-icon {
+  color: var(--color-primary);
+  font-size: 1.4rem;
+}
+
+.siddur-bracha-title {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 1.3;
+  font-family: var(--font-ui);
+}
+
+/* Special prayers */
+.siddur-special-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.siddur-special-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: right;
+  width: 100%;
+  font-family: var(--font-ui);
+}
+
+.siddur-special-row:hover {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 4%, var(--color-surface));
+}
+
+.siddur-special-icon {
+  font-size: 1.3rem;
+  width: 36px;
+  text-align: center;
+  flex-shrink: 0;
+  color: var(--color-primary);
+}
+
+.siddur-special-title {
+  flex: 1;
+  font-weight: 600;
+  font-size: var(--text-base);
+  color: var(--color-text);
 }

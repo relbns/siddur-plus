@@ -5,6 +5,7 @@ import {
   Sedra,
   OmerEvent,
   Zmanim,
+  MoladEvent,
   flags as hebcalFlags,
 } from '@hebcal/core';
 import type { AppContext, UserSettings, ZmanimSet } from './types';
@@ -65,9 +66,11 @@ export function buildContext(
   let sefiraDay: number | null = null;
   let sefiraDayHe: string | null = null;
   let parasha: string | null = null;
+  let haftarah: string | null = null;
   let holidayName: string | null = null;
   let candleLighting: Date | null = null;
   let havdalah: Date | null = null;
+  let moladStr: string | null = null;
 
   for (const ev of events) {
     const mask = ev.getFlags();
@@ -92,6 +95,16 @@ export function buildContext(
     }
     if (mask & hebcalFlags.PARSHA_HASHAVUA) {
       parasha = ev.render('he-x-NoNikud');
+      // Try to get haftarah
+      try {
+        const rendered = ev.render('he');
+        if (rendered && rendered !== parasha) haftarah = rendered;
+      } catch { /* noop */ }
+    }
+
+    // Molad
+    if (ev instanceof MoladEvent || desc.includes('Molad')) {
+      try { moladStr = ev.render('he-x-NoNikud'); } catch { /* noop */ }
     }
 
     // Collect holiday name in Hebrew (without nikud)
@@ -255,7 +268,9 @@ export function buildContext(
     hebrewDate: hDate.renderGematriya(true),
     dayOfWeek: dow,
     parasha,
+    haftarah,
     holidayName,
+    moladStr,
     zmanim,
     currentTimeSlot,
     isShabbat,

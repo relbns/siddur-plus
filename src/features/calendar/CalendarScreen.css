@@ -1,0 +1,268 @@
+.calendar-screen {
+  background: var(--color-bg);
+  min-height: 100dvh;
+}
+
+.calendar-container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-3) var(--space-12);
+}
+
+/* Month nav */
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-xl);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+.cal-nav-btn {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.85);
+  cursor: pointer;
+  padding: var(--space-1);
+  display: flex;
+  border-radius: var(--radius-full);
+  transition: background 0.15s;
+}
+.cal-nav-btn:hover {
+  background: rgba(255,255,255,0.15);
+  color: white;
+}
+
+.cal-month-label {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.cal-month-name {
+  font-family: var(--font-prayer);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.cal-year {
+  font-size: var(--text-sm);
+  opacity: 0.8;
+  font-family: var(--font-prayer);
+}
+
+.cal-today-btn {
+  display: block;
+  margin: 0 auto var(--space-2);
+  background: none;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  border-radius: var(--radius-full);
+  padding: 2px var(--space-4);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  transition: all 0.15s;
+}
+.cal-today-btn:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+/* Calendar grid */
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  margin-bottom: var(--space-3);
+}
+
+.cal-dow {
+  text-align: center;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-weight: 700;
+  padding: var(--space-2) 0;
+  background: var(--color-bg);
+  font-family: var(--font-ui);
+}
+
+.cal-dow.shabbat {
+  color: var(--color-primary);
+}
+
+/* Day cell */
+.cal-day {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  background: var(--color-surface);
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  transition: background 0.12s;
+  font-family: var(--font-prayer);
+}
+
+.cal-day:hover {
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+}
+
+.cal-day.other-month .cal-day-heb {
+  opacity: 0.28;
+}
+
+.cal-day.shabbat .cal-day-heb {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.cal-day.yomtov .cal-day-heb {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.cal-day.rosh-chodesh .cal-day-heb {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.cal-day.today {
+  background: var(--color-primary-light, color-mix(in srgb, var(--color-primary) 12%, transparent));
+}
+
+.cal-day.today .cal-day-heb {
+  background: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-full);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.cal-day.selected:not(.today) {
+  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+}
+
+.cal-day.selected:not(.today) .cal-day-heb {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cal-day-heb {
+  font-size: clamp(10px, 3vw, 16px);
+  line-height: 1;
+  font-family: var(--font-prayer);
+}
+
+/* Dots for special days */
+.cal-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.cal-dot-yomtov { background: #dc2626; }
+.cal-dot-roshchodesh { background: var(--color-primary); }
+.cal-dot-minor { background: #f59e0b; }
+
+/* Molad strip */
+.cal-molad-strip {
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  font-family: var(--font-prayer);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  margin-bottom: var(--space-3);
+}
+
+/* Detail panel */
+.cal-detail-panel {
+  background: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  margin-top: var(--space-2);
+}
+
+.cal-detail-header {
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cal-detail-heb-date {
+  font-family: var(--font-prayer);
+  font-size: var(--text-xl);
+  font-weight: 700;
+}
+
+.cal-detail-greg-date {
+  font-size: var(--text-sm);
+  opacity: 0.75;
+}
+
+.cal-detail-events {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.cal-detail-row {
+  font-family: var(--font-prayer);
+  font-size: var(--text-base);
+  padding: var(--space-1) 0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.92);
+}
+.cal-detail-row:last-child { border-bottom: none; }
+
+.cal-detail-zman-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2) 0;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: rgba(255,255,255,0.88);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.cal-detail-zman-row:last-of-type { border-bottom: none; }
+
+.cal-zmanim-link {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  border-radius: var(--radius-full);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  width: 100%;
+  margin-top: var(--space-2);
+  transition: background 0.15s;
+}
+.cal-zmanim-link:hover { background: rgba(255,255,255,0.25); }

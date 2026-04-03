@@ -1,99 +1,264 @@
-/* Sidebar Layout */
-.sidebar-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 100;
-  backdrop-filter: blur(2px);
-}
-
+/* ========== SIDEBAR ========== */
 .sidebar {
   position: fixed;
   top: 0;
   right: 0;
-  height: 100%;
-  width: 280px;
-  max-width: 80%;
+  width: 300px;
+  max-width: 90vw;
+  height: 100dvh;
   background: var(--color-surface);
-  z-index: 110;
-  transform: translateX(100%);
-  transition: transform var(--transition-normal);
+  border-left: 1px solid var(--color-border);
+  z-index: 1000;
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-lg);
+  transform: translateX(100%);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  overflow: hidden;
 }
 
 .sidebar.open {
   transform: translateX(0);
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.18);
 }
 
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 999;
+  backdrop-filter: blur(2px);
+}
+
+/* Header */
 .sidebar-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: var(--space-4);
   border-bottom: 1px solid var(--color-border);
+  background: var(--color-primary);
+  color: white;
+  flex-shrink: 0;
 }
 
-.sidebar-header h2 {
-  font-family: var(--font-ui);
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sidebar-brand-icon {
+  font-size: 1.4rem;
+}
+
+.sidebar-brand-name {
   font-size: var(--text-lg);
-  color: var(--color-primary);
   font-weight: 700;
-  margin: 0;
+  font-family: var(--font-ui);
 }
 
 .sidebar-close {
   background: none;
   border: none;
-  color: var(--color-text-muted);
+  color: rgba(255,255,255,0.85);
   cursor: pointer;
   padding: var(--space-1);
+  border-radius: var(--radius-sm);
+  display: flex;
+  transition: color 0.15s;
+}
+.sidebar-close:hover { color: white; }
+
+/* Today bar */
+.sidebar-today-bar {
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-primary-light, color-mix(in srgb, var(--color-primary) 12%, transparent));
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.sidebar-today-date {
+  font-family: var(--font-prayer);
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: var(--space-1);
+  text-align: right;
+}
+
+.sidebar-today-zmanim {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.sidebar-zman-item {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 3px;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  font-family: var(--font-ui);
 }
 
+.sidebar-sefirah {
+  font-size: var(--text-xs);
+  color: var(--color-accent, #e07b00);
+  font-weight: 600;
+}
+
+/* Nav */
 .sidebar-nav {
-  padding: var(--space-4) 0;
   flex: 1;
   overflow-y: auto;
+  padding: var(--space-2) 0 var(--space-8) 0;
 }
 
-.sidebar-section-title {
-  padding: 0 var(--space-4);
+.sidebar-section-label {
   font-size: var(--text-xs);
-  color: var(--color-text-muted);
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: var(--space-2);
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  padding: var(--space-3) var(--space-4) var(--space-1);
+  font-family: var(--font-ui);
 }
 
+/* Nav links */
 .sidebar-link {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
   color: var(--color-text);
   text-decoration: none;
+  font-family: var(--font-ui);
   font-size: var(--text-base);
-  font-weight: 500;
-  transition: background var(--transition-fast), color var(--transition-fast);
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: right;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  border-radius: 0;
 }
 
-.sidebar-link:hover, .sidebar-link:active {
-  background: var(--color-surface-alt);
+.sidebar-link:hover {
+  background: var(--color-hover, color-mix(in srgb, var(--color-primary) 8%, transparent));
+  color: var(--color-primary);
 }
 
 .sidebar-link.active {
-  background: var(--color-primary-light);
-  color: var(--color-primary-dark);
+  background: var(--color-primary-light, color-mix(in srgb, var(--color-primary) 12%, transparent));
+  color: var(--color-primary);
+  font-weight: 600;
 }
 
 .sidebar-link-icon {
-  color: var(--color-text-secondary);
+  flex-shrink: 0;
+  opacity: 0.7;
 }
 
 .sidebar-link.active .sidebar-link-icon {
-  color: var(--color-primary-dark);
+  opacity: 1;
+}
+
+/* Accordion */
+.sidebar-accordion {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.sidebar-prayer-row {
+  display: flex;
+  align-items: stretch;
+}
+
+.sidebar-prayer-row.active-prayer {
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  border-right: 3px solid var(--color-primary);
+}
+
+.sidebar-prayer-name {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-text);
+  text-decoration: none;
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  transition: color 0.15s;
+}
+
+.sidebar-prayer-name:hover {
+  color: var(--color-primary);
+}
+
+.sidebar-accordion-toggle {
+  background: none;
+  border: none;
+  border-right: 1px solid var(--color-border);
+  padding: 0 var(--space-3);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s, transform 0.2s;
+}
+
+.sidebar-accordion-toggle:hover {
+  color: var(--color-primary);
+}
+
+.sidebar-accordion-toggle.open {
+  color: var(--color-primary);
+}
+
+.sidebar-accordion-toggle .lucide {
+  transition: transform 0.22s ease;
+}
+
+.sidebar-accordion-toggle.open .lucide {
+  transform: rotate(180deg);
+}
+
+/* Sections list inside accordion */
+.sidebar-sections {
+  background: var(--color-bg);
+  border-top: 1px solid var(--color-border);
+}
+
+.sidebar-section-link {
+  display: block;
+  padding: var(--space-2) var(--space-4) var(--space-2) var(--space-8);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-family: var(--font-prayer);
+  font-size: var(--text-sm);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+  transition: color 0.15s, background 0.15s;
+  text-align: right;
+}
+
+.sidebar-section-link:last-child {
+  border-bottom: none;
+}
+
+.sidebar-section-link:hover {
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+}
+
+/* Share button */
+.sidebar-share-btn {
+  border-top: 1px solid var(--color-border);
+  margin-top: var(--space-2);
+  color: var(--color-text-secondary);
+}
+
+.sidebar-share-btn:hover {
+  color: var(--color-primary);
 }
