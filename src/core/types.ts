@@ -141,6 +141,7 @@ export interface UserSettings {
   prayerMode: 'regular' | 'chazan' | 'yachid';
   isMournerHouse: boolean;
   forceNoTachanun: boolean;
+  silentModeReminder: boolean;
   location: { lat: number; lng: number } | null;
 }
 
@@ -154,5 +155,6 @@ export const DEFAULT_SETTINGS: UserSettings = {
   prayerMode: 'regular',
   isMournerHouse: false,
   forceNoTachanun: false,
+  silentModeReminder: true,
   location: null,
 };

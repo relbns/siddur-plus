@@ -119,6 +119,13 @@ export function SettingsScreen() {
           </select>
         </SettingGroup>
 
+        <SettingGroup label="תזכורת מצב שקט">
+          <ToggleSwitch
+            checked={settings.silentModeReminder}
+            onChange={(v) => settings.updateSetting('silentModeReminder', v)}
+          />
+        </SettingGroup>
+
         <SettingGroup label="השאר מסך דולק (בזמן תפילה)">
           <ToggleSwitch
             checked={settings.keepScreenAwake}
