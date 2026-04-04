@@ -52,7 +52,7 @@ export function PrayerReader() {
     async function loadPrayer() {
       try {
         const nusach = settings.nusach || 'sefard';
-        const res = await fetch(`/data/prayer-${prayerId}-${nusach}.json`);
+        const res = await fetch(`./data/prayer-${prayerId}-${nusach}.json`);
         if (res.ok) {
           const data: PrayerDocument = await res.json();
           setDocument(data);
