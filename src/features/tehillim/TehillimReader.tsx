@@ -41,7 +41,7 @@ export function TehillimReader() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch('/data/tehillim.json');
+        const res = await fetch('./data/tehillim.json');
         if (res.ok) {
           const data: TehillimChapter[] = await res.json();
           setAllChapters(data);
